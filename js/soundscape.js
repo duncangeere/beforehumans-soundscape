@@ -139,7 +139,7 @@ const App = (() => {
       card.innerHTML = `
         <div class="search-card-info">
           <div class="search-card-name" title="${escHtml(sample.name)}">${escHtml(sample.name)}</div>
-          <div class="search-card-meta">${sample.duration.toFixed(1)}s &middot; ${escHtml(sample.username)} &middot; ${shortLicense(sample.license)}</div>
+          <div class="search-card-meta">${sample.duration.toFixed(1)}s &middot; ${escHtml(sample.username)} &middot; ${escHtml(shortLicense(sample.license))}</div>
         </div>
         <div class="search-card-actions">
           <button class="btn-icon preview-btn" title="Preview">&#9654;</button>
@@ -765,10 +765,22 @@ const App = (() => {
     return null;
   }
 
+  /**
+   * Escape text for safe insertion into HTML, both as element content and
+   * inside quoted attribute values (e.g. title="..."). Sound names and
+   * usernames come from Freesound users, so they must be treated as hostile.
+   *
+   * The common textContent/innerHTML trick is not enough on its own: it
+   * escapes & < > but leaves quote marks alone, so a name containing " could
+   * close an attribute and add its own (an onmouseover handler, say).
+   */
   function escHtml(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
+    return String(str ?? '')
+      .replace(/&/g, '&amp;') // must come first, or it would re-escape the others
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   // Init on DOM ready

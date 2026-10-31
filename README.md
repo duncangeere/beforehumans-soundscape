@@ -13,7 +13,7 @@ python3 server.py
 # http://localhost:8000
 ```
 
-The server proxies Freesound audio files (their CDN lacks CORS headers).
+The server proxies Freesound audio files (their CDN lacks CORS headers). It only listens on your own machine, and the proxy only fetches from Freesound's domains.
 
 ## Files
 
